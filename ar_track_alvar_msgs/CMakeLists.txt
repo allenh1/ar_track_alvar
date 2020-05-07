@@ -1,18 +1,24 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.9.5)
 project(ar_track_alvar_msgs)
 
-set(MSG_DEPS
-    std_msgs
-    geometry_msgs
-    )
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-find_package(catkin REQUIRED COMPONENTS
-  message_generation
-  ${MSG_DEPS}
+find_package(ament_cmake REQUIRED)
+find_package(builtin_interfaces REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(std_msgs REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/AlvarMarker.msg"
+  "msg/AlvarMarkers.msg"
+  DEPENDENCIES builtin_interfaces geometry_msgs std_msgs
 )
 
-set(MSG_FILES AlvarMarker.msg AlvarMarkers.msg)
-add_message_files(DIRECTORY msg FILES ${MSG_FILES})
-generate_messages(DEPENDENCIES ${MSG_DEPS})
-
-catkin_package(CATKIN_DEPENDS message_runtime ${MSG_DEPS})
+ament_package()
